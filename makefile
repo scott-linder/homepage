@@ -8,9 +8,17 @@ IN=./
 OUT=./homepage/
 
 PUB=$(OUT)public/
+TPL=$(OUT)template/
+TST=$(OUT)testimonials/
 CGI=$(PUB)router.cgi
 
-all: $(CGI)
+all: $(CGI) $(TPL) $(TST)
+
+$(TST):
+	cp -r $(IN)testimonials/ $(TST)
+
+$(TPL):
+	cp -r $(IN)template/ $(TPL)
 
 $(CGI): $(PUB)
 	go build -o $(CGI)
