@@ -19,6 +19,19 @@ h3 {
     font-size: large;
 }
 
+a:link {
+    color: #5588ee;
+}
+a:hover {
+    color: #88aaff;
+}
+a:active {
+    color: #d37aff;
+}
+a:visited {
+    color: #c145ff;
+}
+
 p {
     text-indent: 2em;
     line-height: 1.3;
