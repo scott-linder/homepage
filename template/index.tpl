@@ -8,9 +8,11 @@
 <body>
     <section>
         <h1>Homepage of Scott Linder</h1>
+        <p>Feel free to look around and not touch anything.</p>
     </section>
     <section>
         <h2>Navigation</h2>
+        <p>Get to the myriad (read: <em>one</em>) parts of the site.</p>
         <ul>
             <li><a href="testimonials">Testimonials</a></li>
         </ul>
