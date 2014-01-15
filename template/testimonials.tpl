@@ -25,7 +25,7 @@
     </section>
     <section>
         <footer>
-        © Scott Linder (2013)
+        © Scott Linder (2014)
         </footer>
     </section>
 </body>
