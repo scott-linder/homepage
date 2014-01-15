@@ -12,9 +12,13 @@
     <section>
         <h2>Navigation</h2>
         <ul>
-            <li>
-            <a href="testimonials">Testimonials</a>
-            </li>
+            <li><a href="testimonials">Testimonials</a></li>
+        </ul>
+        <h2>Related</h2>
+        <p>Stuff related to my existence.</p>
+        <ul>
+            <li><a href="https://github.com/scott-linder">My Github</a></li>
+            <li><a href="http://ccowmu.org/">WMU Computer Club</a></li>
         </ul>
     </section>
     <section>
