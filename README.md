@@ -22,3 +22,8 @@ server. It will also contain the final cgi binary.
 ### homepage.go
 The entry point for the cgi website. Try to keep it clean and simple.
 
+### *.go
+Most Go source files encapsulate a complete page or group of pages on the site.
+
+### *.tpl
+Most GO source files have an associated HTML template file.
