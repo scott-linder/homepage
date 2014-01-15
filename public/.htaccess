@@ -1,0 +1,7 @@
+IndexIgnore */*
+Options +ExecCGI
+AddHandler cgi-script .cgi
+RewriteEngine on
+RewriteBase /~smn2028/
+RewriteCond ${REQUEST_FILENAME} !-f
+RewriteRule ^ router.cgi [L]
