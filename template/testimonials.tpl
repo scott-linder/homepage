@@ -14,10 +14,6 @@
         {{range $testimonial := .Testimonials}}
         <article>
         {{$testimonial.Body}}
-        <dl>
-        <dt>Last Modified</dt>
-        <dd>{{$testimonial.ModTime}}</dd>
-        </dl>
         </article>
         {{else}}
         <p>There ain't no testimonials.</p>

@@ -7,14 +7,12 @@ import (
     "html/template"
     "path/filepath"
     "io/ioutil"
-    "time"
 
     "github.com/russross/blackfriday"
 )
 
 type testimonial struct {
     Body template.HTML
-    ModTime time.Time
 }
 
 type Testimonials struct {}
@@ -47,7 +45,7 @@ func (self Testimonials) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             }
             testimonialHTML := template.HTML(blackfriday.MarkdownCommon(testimonialMarkdown))
             data.Testimonials = append(data.Testimonials,
-                        testimonial{Body: testimonialHTML, ModTime: info.ModTime()})
+                        testimonial{Body: testimonialHTML})
         }
         return nil
     }
