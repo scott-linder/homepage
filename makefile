@@ -1,33 +1,46 @@
 #
-# Homepage makefile
+# Homepage makefile.
 # Authors:
 # 	Scott Linder
 #
 
-IN=./
-OUT=./homepage/
+# Site output directory.
+OUT=homepage/
 
-PUB=$(OUT)public/
-TPL=$(OUT)template/
-TST=$(OUT)testimonials/
-CGI=$(PUB)router.cgi
+# Site input directories.
+PRI=private/
+PUB=public/
 
-all: $(CGI) $(TPL) $(TST)
+# Source files for public and private parts of site.
+PRI_SRC:=$(shell find $(PRI) -type f)
+PUB_SRC:=$(shell find $(PUB) -type f)
+# Destinations of source files.
+PRI_DEST:=$(patsubst private/%, $(OUT)%, $(PRI_SRC))
+PUB_DEST:=$(addprefix $(OUT), $(PUB_SRC))
+# Combine all parts of site so we can have one copy rule.
+FILES_SRC:=$(PRI_SRC) $(PUB_SRC)
+FILES_DEST:=$(PRI_DEST) $(PUB_DEST)
 
-$(TST):
-	cp -r $(IN)testimonials/ $(TST)
+# Go source.
+GO_SRC:=$(shell find go/ -type f -name '*.go')
+# Go CGI.
+CGI=$(OUT)$(PUB)router.cgi
 
-$(TPL):
-	cp -r $(IN)template/ $(TPL)
 
-$(CGI): $(PUB)
-	go build -o $(CGI)
+# Build site.
+all: $(FILES_DEST) $(CGI)
 
-$(PUB): | $(OUT)
-	cp -r $(IN)public/ $(PUB)
+$(OUT)%: $(PRI)%
+	@mkdir -p $(@D)
+	cp $< $@
 
-$(OUT):
-	[ -d $(OUT) ] || mkdir $(OUT)
+$(OUT)$(PUB)%: $(PUB)%
+	@mkdir -p $(@D)
+	cp $< $@
+
+# Build site CGI.
+$(CGI): $(GO_SRC)
+	cd go; go build -o ../$(CGI)
 
 clean:
 	-rm -rf $(OUT)
