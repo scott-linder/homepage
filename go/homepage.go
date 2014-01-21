@@ -3,22 +3,23 @@ package main
 import (
     "net/http"
     "net/http/cgi"
+    "log"
 
     "github.com/gorilla/mux"
 )
 
-// TODO: Move global constants into a singleton Config; read from JSON file
-const (
-    // Our subrouter URI on server
-    basePath = "/~smn2028"
-)
+// Cfg is the global config instance for the site.
+var Cfg Config
 
 func main() {
+    if err := Cfg.Load("../config/global.json"); err != nil {
+        log.Fatal(err)
+    }
     r := mux.NewRouter()
-    // We are always under basePath
-    s := r.PathPrefix(basePath).Subrouter()
+    s := r.PathPrefix(Cfg.BasePath).Subrouter()
     s.Handle("/testimonials", Testimonials{})
     s.Handle("/", Index{})
     http.Handle("/", r)
     cgi.Serve(nil)
 }
+
