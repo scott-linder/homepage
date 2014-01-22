@@ -1,7 +1,6 @@
 package main
 
 import (
-    "net/http"
     "net/http/cgi"
     "log"
 
@@ -19,7 +18,6 @@ func main() {
     s := r.PathPrefix(Cfg.BasePath).Subrouter()
     s.Handle("/testimonials", Testimonials{})
     s.Handle("/", Index{})
-    http.Handle("/", r)
-    cgi.Serve(nil)
+    cgi.Serve(r)
 }
 
