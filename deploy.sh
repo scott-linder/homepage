@@ -10,7 +10,7 @@ set -e
 
 cd `dirname $0`
 
-SRC=homepage/
+SRC=site/
 
 function deploy {
     USER=$1

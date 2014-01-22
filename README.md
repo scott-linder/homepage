@@ -23,17 +23,16 @@ The entry point for the CGI website. Try to keep it clean and simple.
 #### *.go
 Most Go source files encapsulate a complete page or group of pages on the site.
 
-### private/
+### site/
 Anything which the website runs from but which should not be served publicly
 on the server; examples include raw blog entries.
 
 #### template/
 Most Go source files have an associated HTML template file.
 
-### public/
-Anything which the web server can serve publicly.
+#### config/
+Mostly json config file(s).
 
-### homepage/
-This directory is where all `make` output is housed, in the correct format
-to be sync'd directly to the web server by deploy.sh
+### site/public/
+Anything which the web server can serve publicly.
 
