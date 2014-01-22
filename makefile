@@ -16,12 +16,14 @@ CGI=$(PUB)router.cgi
 
 
 # Build site.
+.PHONY: all
 all: $(CGI)
 
 # Build site CGI.
 $(CGI): $(GO_SRC)
 	cd go; go build -o ../$(CGI)
 
+.PHONY: clean
 clean:
 	-rm $(CGI)
 
