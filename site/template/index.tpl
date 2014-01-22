@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Homepage − Scott Linder</title>
+    <title>{{.Title}}</title>
     <meta charset='utf-8'>
     <link rel="stylesheet" type="text/css" href="/~smn2028/style/main.css">
 </head>
@@ -25,7 +25,7 @@
     </section>
     <section>
         <footer>
-        © Scott Linder (2014)
+            {{.Footer}}
         </footer>
     </section>
 </body>

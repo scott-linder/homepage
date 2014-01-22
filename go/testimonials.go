@@ -24,8 +24,13 @@ func (self Testimonials) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     }
 
     data := struct {
+        Title string
+        Footer string
         Testimonials []testimonial
     } {}
+
+    data.Title = Cfg.Title + "Testimonials"
+    data.Footer = Cfg.Footer
 
     buildTestimonials := func(path string, info os.FileInfo, err error) error {
         if err != nil {

@@ -15,7 +15,12 @@ func (self Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     }
 
     data := struct {
+        Title string
+        Footer string
     } {}
+
+    data.Title = Cfg.Title + "Index"
+    data.Footer = Cfg.Footer
 
     tpl.Execute(w, data)
 }

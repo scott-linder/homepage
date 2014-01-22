@@ -9,6 +9,10 @@ import (
 type Config struct {
     // BasePath is the root of our site's URL on server.
     BasePath string
+    // Title is the base title for the site.
+    Title string
+    // Footer is the base footer for the site.
+    Footer string
 }
 
 // Load loads the global config from a file.
