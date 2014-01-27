@@ -16,11 +16,10 @@ func main() {
     if err := Cfg.Load("../config/global.json"); err != nil {
         log.Fatal(err)
     }
-    r := mux.NewRouter()
+    r := mux.NewRouter().StrictSlash(false)
     s := r.PathPrefix(Cfg.BasePath).Subrouter()
     st := s.PathPrefix("/testimonials").Subrouter()
-    st.Handle("/", blog.NewBlog("../template/testimonials.tpl",
-                                "../testimonials/"))
+    blog.NewBlog(st, "../template/testimonials.tpl", "../testimonials/")
     s.Handle("/", Index{})
     cgi.Serve(r)
 }

@@ -2,6 +2,7 @@ package blog
 
 import (
     "os"
+    "fmt"
     "log"
     "time"
     "strings"
@@ -10,6 +11,7 @@ import (
     "path/filepath"
     "io/ioutil"
 
+    "github.com/gorilla/mux"
     "github.com/russross/blackfriday"
 )
 
@@ -31,6 +33,8 @@ type post struct {
 
 // Blog is a blog site.
 type Blog struct {
+    // Router is the mux (sub)router which Blog works under.
+    Router *mux.Router
     // TplPath is the relative path to the HTML template for the Blog.
     TplPath string
     // PostDir is the relative path to the directory containing blog posts.
@@ -38,11 +42,16 @@ type Blog struct {
 }
 
 // NewBlog returns a new Blog instance.
-func NewBlog(tplPath, postDir string) *Blog {
-    return &Blog{TplPath: tplPath, PostDir: postDir}
+func NewBlog(router *mux.Router, tplPath, postDir string) (blog *Blog) {
+    blog = &Blog{Router: router, TplPath: tplPath, PostDir: postDir}
+    router.Handle("/", blog)
+    router.Handle("/post/{year:[0-9]+}/{month:[0-9]+}/{day:[0-9]+}/{name}/",
+                    blog).Name("post")
+    return
 }
 
 func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
     tpl, err := template.ParseFiles(self.TplPath)
     if err != nil {
         log.Fatal(err)
@@ -50,7 +59,7 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     // data is the template data for the Blog.
     data := struct {
-        // Testimonials is the slice of testimonials.
+        // Posts is the slice of posts for this blog page.
         Posts []post
     } {}
 
@@ -68,9 +77,21 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         }
         postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
         if err != nil {
-            log.Printf("Error parsing date: %v\n", err)
+            log.Printf("Error parsing date from %v; skipping: %v\n",
+                        info.Name(), err)
+            return nil
         }
         postName := nameField
+
+        postPermalinkURL, err := self.Router.Get("post").
+            URL("year", fmt.Sprintf("%d", postDate.Year()),
+                "month", fmt.Sprintf("%d", postDate.Month()),
+                "day", fmt.Sprintf("%d", postDate.Day()),
+                "name", postName)
+        if err != nil {
+            log.Printf("Error creating permalink: %v\n", err)
+        }
+        postPermalink := postPermalinkURL.String()
 
         if !info.IsDir() {
             postFile, err := os.Open(path)
@@ -84,7 +105,8 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             }
             postHTML := template.HTML(blackfriday.MarkdownCommon(postMarkdown))
             data.Posts = append(data.Posts, post{Name: postName, Body: postHTML,
-                                                    Date: postDate})
+                                                 Date: postDate,
+                                                 Permalink: postPermalink})
         }
         return nil
     }

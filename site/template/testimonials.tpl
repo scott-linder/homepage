@@ -17,7 +17,7 @@
             {{$post.Date.Format "Jan 2, 2006"}}</time>
         <h1>{{$post.Name}}</h1>
         {{$post.Body}}
-        <a href="/" class="permalink">Permalink</a>
+        <a href="{{$post.Permalink}}" class="permalink">Permalink</a>
         </article>
         {{else}}
         <p>There ain't no testimonials.</p>
