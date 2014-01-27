@@ -9,10 +9,6 @@ import (
 type Config struct {
     // BasePath is the root of our site's URL on server.
     BasePath string
-    // Title is the base title for the site.
-    Title string
-    // Footer is the base footer for the site.
-    Footer string
     // PageSize is number of posts per blog page.
     PageSize int
 }
