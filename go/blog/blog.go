@@ -3,6 +3,8 @@ package blog
 import (
     "os"
     "log"
+    "time"
+    "strings"
     "net/http"
     "html/template"
     "path/filepath"
@@ -11,9 +13,20 @@ import (
     "github.com/russross/blackfriday"
 )
 
+const (
+    dateFormat = "2006-01-02"
+)
+
 // post is a single blog entry.
 type post struct {
+    // Name is the name of the post for perma-link purposes.
+    Name string
+    // Body is the content of the post.
     Body template.HTML
+    // Date is the date the post was published.
+    Date time.Time
+    // Permalink is a permanant URL pointing to this post.
+    Permalink string
 }
 
 // Blog is a blog site.
@@ -47,6 +60,18 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             return nil
         }
 
+        nameFields := strings.Split(info.Name(), ".")
+        var dateField, nameField string
+        if len(nameFields) >= 2 {
+            dateField = nameFields[0]
+            nameField = nameFields[1]
+        }
+        postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
+        if err != nil {
+            log.Printf("Error parsing date: %v\n", err)
+        }
+        postName := nameField
+
         if !info.IsDir() {
             postFile, err := os.Open(path)
             if err != nil {
@@ -58,7 +83,8 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
                 log.Printf("Error reading blog post file markdown %v\n", err)
             }
             postHTML := template.HTML(blackfriday.MarkdownCommon(postMarkdown))
-            data.Posts = append(data.Posts, post{Body: postHTML})
+            data.Posts = append(data.Posts, post{Name: postName, Body: postHTML,
+                                                    Date: postDate})
         }
         return nil
     }

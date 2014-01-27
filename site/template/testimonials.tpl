@@ -13,7 +13,11 @@
     <section>
         {{range $post := .Posts}}
         <article>
+        <time datetime="{{$post.Date.Format "2006-01-02"}}">
+            {{$post.Date.Format "Jan 2, 2006"}}</time>
+        <h1>{{$post.Name}}</h1>
         {{$post.Body}}
+        <a href="/" class="permalink">Permalink</a>
         </article>
         {{else}}
         <p>There ain't no testimonials.</p>
