@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{.Title}}</title>
+    <title>Scott Linder - Index</title>
     <meta charset='utf-8'>
     <link rel="stylesheet" type="text/css" href="/~smn2028/style/main.css">
 </head>
@@ -20,24 +20,19 @@
         <p>This is my homepage on the WMU CS webservers (shout out to the
         department for free hosting). The site is largely written in Go, and
         all of the sources are avaialable on my GitHub at
-        <a href="https://github.com/scott-linder/homepage">scott-linder/homepage</a>.
+        <a href="https://github.com/scott-linder/homepage/">scott-linder/homepage</a>.
         </p>
         <h2>Navigation</h2>
         <p>Get to the myriad (read: <em>one</em>) parts of the site.</p>
         <ul>
-            <li><a href="testimonials">Testimonials</a></li>
+            <li><a href="testimonials/">Testimonials</a></li>
         </ul>
         <h2>Related</h2>
         <p>Stuff related to my existence.</p>
         <ul>
-            <li><a href="https://github.com/scott-linder">My Github</a></li>
-            <li><a href="http://ccowmu.org/">WMU Computer Club</a></li>
+            <li><a href="https://github.com/scott-linder/">My Github</a></li>
+            <li><a href="https://ccowmu.org/">WMU Computer Club</a></li>
         </ul>
-    </section>
-    <section>
-        <footer>
-            {{.Footer}}
-        </footer>
     </section>
 </body>
 </html>
