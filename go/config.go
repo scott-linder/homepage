@@ -13,6 +13,8 @@ type Config struct {
     Title string
     // Footer is the base footer for the site.
     Footer string
+    // PageSize is number of posts per blog page.
+    PageSize int
 }
 
 // Load loads the global config from a file.
