@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{.Title}}</title>
+    <title>Scott Linder − Testimonials</title>
     <meta charset='utf-8'>
     <link rel="stylesheet" type="text/css" href="/~smn2028/style/main.css">
 </head>
@@ -11,18 +11,13 @@
         <h2>Where others blog vicariously through quotes.</h2>
     </section>
     <section>
-        {{range $testimonial := .Testimonials}}
+        {{range $post := .Posts}}
         <article>
-        {{$testimonial.Body}}
+        {{$post.Body}}
         </article>
         {{else}}
         <p>There ain't no testimonials.</p>
         {{end}}
-    </section>
-    <section>
-        <footer>
-            {{.Footer}}
-        </footer>
     </section>
 </body>
 </html>

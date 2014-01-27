@@ -4,6 +4,8 @@ import (
     "net/http/cgi"
     "log"
 
+    "blog"
+
     "github.com/gorilla/mux"
 )
 
@@ -16,7 +18,9 @@ func main() {
     }
     r := mux.NewRouter()
     s := r.PathPrefix(Cfg.BasePath).Subrouter()
-    s.Handle("/testimonials", Testimonials{})
+    st := s.PathPrefix("/testimonials").Subrouter()
+    st.Handle("/", blog.NewBlog("../template/testimonials.tpl",
+                                "../testimonials/"))
     s.Handle("/", Index{})
     cgi.Serve(r)
 }
