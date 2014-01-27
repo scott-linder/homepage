@@ -69,31 +69,31 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             return nil
         }
 
-        nameFields := strings.Split(info.Name(), ".")
-        var dateField, nameField string
-        if len(nameFields) >= 2 {
-            dateField = nameFields[0]
-            nameField = nameFields[1]
-        }
-        postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
-        if err != nil {
-            log.Printf("Error parsing date from %v; skipping: %v\n",
-                        info.Name(), err)
-            return nil
-        }
-        postName := nameField
-
-        postPermalinkURL, err := self.Router.Get("post").
-            URL("year", fmt.Sprintf("%d", postDate.Year()),
-                "month", fmt.Sprintf("%d", postDate.Month()),
-                "day", fmt.Sprintf("%d", postDate.Day()),
-                "name", postName)
-        if err != nil {
-            log.Printf("Error creating permalink: %v\n", err)
-        }
-        postPermalink := postPermalinkURL.String()
-
         if !info.IsDir() {
+            nameFields := strings.Split(info.Name(), ".")
+            var dateField, nameField string
+            if len(nameFields) >= 2 {
+                dateField = nameFields[0]
+                nameField = nameFields[1]
+            }
+            postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
+            if err != nil {
+                log.Printf("Error parsing date from %v; skipping: %v\n",
+                            info.Name(), err)
+                return nil
+            }
+            postName := nameField
+
+            postPermalinkURL, err := self.Router.Get("post").
+                URL("year", fmt.Sprintf("%d", postDate.Year()),
+                    "month", fmt.Sprintf("%d", postDate.Month()),
+                    "day", fmt.Sprintf("%d", postDate.Day()),
+                    "name", postName)
+            if err != nil {
+                log.Printf("Error creating permalink: %v\n", err)
+            }
+            postPermalink := postPermalinkURL.String()
+
             postFile, err := os.Open(path)
             if err != nil {
                 log.Printf("Error opening blog post file: %v\n", err)
