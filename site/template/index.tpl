@@ -19,12 +19,13 @@
         <h3>The Site</h3>
         <p>This is my homepage on the WMU CS webservers (shout out to the
         department for free hosting). The site is largely written in Go, and
-        all of the sources are avaialable on my GitHub at
+        all of the sources are available on my GitHub at
         <a href="https://github.com/scott-linder/homepage/">scott-linder/homepage</a>.
         </p>
         <h2>Navigation</h2>
-        <p>Get to the myriad (read: <em>one</em>) parts of the site.</p>
+        <p>Get to the myriad (read: <em>two</em>) parts of the site.</p>
         <ul>
+            <li><a href="blag/">Blag</a></li>
             <li><a href="testimonials/">Testimonials</a></li>
         </ul>
         <h2>Related</h2>
