@@ -4,8 +4,7 @@ import (
     "net/http/cgi"
     "log"
 
-    "blog"
-
+    "github.com/scott-linder/blog"
     "github.com/gorilla/mux"
 )
 
