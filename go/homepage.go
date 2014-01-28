@@ -19,7 +19,10 @@ func main() {
     s := r.PathPrefix(Cfg.BasePath).Subrouter()
     st := s.PathPrefix("/testimonials").Subrouter()
     blog.NewBlog(st, "../template/testimonials.tpl", "../testimonials/", Cfg.PageSize)
+    sb := s.PathPrefix("/blag").Subrouter()
+    blog.NewBlog(sb, "../template/blag.tpl", "../blag/", Cfg.PageSize)
     s.Handle("/", Index{})
     cgi.Serve(r)
 }
+
 
