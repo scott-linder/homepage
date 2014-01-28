@@ -19,7 +19,7 @@ func main() {
     r := mux.NewRouter().StrictSlash(false)
     s := r.PathPrefix(Cfg.BasePath).Subrouter()
     st := s.PathPrefix("/testimonials").Subrouter()
-    blog.NewBlog(st, "../template/testimonials.tpl", "../testimonials/")
+    blog.NewBlog(st, "../template/testimonials.tpl", "../testimonials/", Cfg.PageSize)
     s.Handle("/", Index{})
     cgi.Serve(r)
 }

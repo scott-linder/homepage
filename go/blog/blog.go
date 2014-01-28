@@ -16,6 +16,7 @@ import (
 )
 
 const (
+    // dateFormat is the expected format of filename dates.
     dateFormat = "2006-01-02"
 )
 
@@ -39,11 +40,13 @@ type Blog struct {
     TplPath string
     // PostDir is the relative path to the directory containing blog posts.
     PostDir string
+    // PageSize is the number of posts to a page.
+    PageSize int
 }
 
 // NewBlog returns a new Blog instance.
-func NewBlog(router *mux.Router, tplPath, postDir string) (blog *Blog) {
-    blog = &Blog{Router: router, TplPath: tplPath, PostDir: postDir}
+func NewBlog(router *mux.Router, tplPath, postDir string, pageSize int) (blog *Blog) {
+    blog = &Blog{Router: router, TplPath: tplPath, PostDir: postDir, PageSize: pageSize}
     router.Handle("/", blog)
     router.Handle("/post/{year:[0-9]+}/{month:[0-9]+}/{day:[0-9]+}/{name}/",
                     blog).Name("post")
@@ -63,6 +66,68 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         Posts []post
     } {}
 
+    vars := mux.Vars(r)
+
+    switch mux.CurrentRoute(r).GetName() {
+    case "post":
+        data.Posts = make([]post, 1)
+        data.Posts[0], err = self.getPost(vars["year"], vars["month"],
+                                            vars["day"], vars["name"])
+    default:
+        data.Posts, err = self.getPage()
+    }
+
+
+    tpl.Execute(w, data)
+}
+
+func (self Blog) newPost(path string, info os.FileInfo) post {
+    nameFields := strings.Split(info.Name(), ".")
+    var dateField, nameField string
+    if len(nameFields) >= 2 {
+        dateField = nameFields[0]
+        nameField = nameFields[1]
+    }
+    postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
+    if err != nil {
+        log.Fatalf("Error parsing date from %v; skipping: %v\n",
+                    info.Name(), err)
+
+    }
+    postName := nameField
+
+    postPermalinkURL, err := self.Router.Get("post").
+        URL("year", fmt.Sprintf("%d", postDate.Year()),
+            "month", fmt.Sprintf("%d", postDate.Month()),
+            "day", fmt.Sprintf("%d", postDate.Day()),
+            "name", postName)
+    if err != nil {
+        log.Printf("Error creating permalink: %v\n", err)
+    }
+    postPermalink := postPermalinkURL.String()
+
+    postFile, err := os.Open(path)
+    if err != nil {
+        log.Fatalf("Error opening blog post file: %v\n", err)
+    }
+    postMarkdown, err := ioutil.ReadAll(postFile)
+    if err != nil {
+        log.Printf("Error reading blog post file markdown %v\n", err)
+    }
+    postHTML := template.HTML(blackfriday.MarkdownCommon(postMarkdown))
+    return post{Name: postName, Body: postHTML, Date: postDate, Permalink: postPermalink}
+}
+
+func (self Blog) getPost(year, month, day, name string) (post, error) {
+    path := self.PostDir + fmt.Sprintf("%04s-%02s-%02s.%s.md", year, month, day, name);
+    info, err := os.Stat(path)
+    if err != nil {
+        log.Fatalf("Unable to stat blog post: %v\n", err)
+    }
+    return self.newPost(path, info), nil
+}
+
+func (self Blog) getPage() (posts []post, err error) {
     buildPosts := func(path string, info os.FileInfo, err error) error {
         if err != nil {
             log.Printf("Error walking: %v\n", err)
@@ -70,53 +135,16 @@ func (self Blog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         }
 
         if !info.IsDir() {
-            nameFields := strings.Split(info.Name(), ".")
-            var dateField, nameField string
-            if len(nameFields) >= 2 {
-                dateField = nameFields[0]
-                nameField = nameFields[1]
-            }
-            postDate, err := time.ParseInLocation(dateFormat, dateField, time.UTC)
-            if err != nil {
-                log.Printf("Error parsing date from %v; skipping: %v\n",
-                            info.Name(), err)
-                return nil
-            }
-            postName := nameField
-
-            postPermalinkURL, err := self.Router.Get("post").
-                URL("year", fmt.Sprintf("%d", postDate.Year()),
-                    "month", fmt.Sprintf("%d", postDate.Month()),
-                    "day", fmt.Sprintf("%d", postDate.Day()),
-                    "name", postName)
-            if err != nil {
-                log.Printf("Error creating permalink: %v\n", err)
-            }
-            postPermalink := postPermalinkURL.String()
-
-            postFile, err := os.Open(path)
-            if err != nil {
-                log.Printf("Error opening blog post file: %v\n", err)
-                return nil
-            }
-            postMarkdown, err := ioutil.ReadAll(postFile)
-            if err != nil {
-                log.Printf("Error reading blog post file markdown %v\n", err)
-            }
-            postHTML := template.HTML(blackfriday.MarkdownCommon(postMarkdown))
-            data.Posts = append(data.Posts, post{Name: postName, Body: postHTML,
-                                                 Date: postDate,
-                                                 Permalink: postPermalink})
+            posts = append(posts, self.newPost(path, info))
         }
         return nil
     }
 
     filepath.Walk(self.PostDir, buildPosts)
     // Reverse order.
-    for i, j := 0, len(data.Posts)-1; i < j; i, j = i+1, j-1 {
-        data.Posts[i], data.Posts[j] = data.Posts[j], data.Posts[i]
+    for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+        posts[i], posts[j] = posts[j], posts[i]
     }
 
-    tpl.Execute(w, data)
+    return posts, nil
 }
-
