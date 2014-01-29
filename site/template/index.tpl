@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Scott Linder - Index</title>
+    <title>Scott Linder − Index</title>
     <meta charset='utf-8'>
     <link rel="stylesheet" type="text/css" href="/~smn2028/style/main.css">
 </head>
